@@ -16,13 +16,25 @@ use Illuminate\Support\Facades\Redis;
  * @package Teknasyon\LaravelTrackableJobs
  * @author Ilyas Serter <ilyasserter@teknasyon.com>
  */
-class RedisJobTrackingStore implements JobTrackingStoreInterface
+class RedisJobTrackingStore implements JobTrackingStore
 {
 
-    public $redisKey = 'trackable-jobs';
-    public $lifeTime = 3600; // 1 hour
+    protected $redisKey = 'trackable-jobs';
+    protected $lifeTime = 3600; // 1 hour
 
+    /**
+     * @return string
+     */
+    public function generateId()
+    {
+        $id = uniqid();
+        while ($this->has($id)) {
+            $id = uniqid();
+        }
 
+        return $id;
+    }
+    
     /**
      * @param $id
      * @return bool
@@ -91,6 +103,22 @@ class RedisJobTrackingStore implements JobTrackingStoreInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLifeTime()
+    {
+        return $this->lifeTime;
+    }
+
+    /**
+     * @param int $lifeTime
+     */
+    public function setLifeTime($lifeTime)
+    {
+        $this->lifeTime = $lifeTime;
     }
 
     /**
