@@ -1,0 +1,22 @@
+{
+  "name": "teknasyon/laravel-trackable-jobs",
+  "keywords": ["laravel queue", "queue", "trackable jobs", "laravel trackable job queue"],
+  "description": "Keeps track of queued jobs for Laravel applications",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ilyas Serter",
+      "email": "ilyasserter@teknasyon.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "illuminate/support": "^5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Teknasyon\\LaravelTrackableJobs\\": "src/"
+    }
+  },
+  "minimum-stability": "stable"
+}
