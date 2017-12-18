@@ -109,7 +109,7 @@ class TrackableJobPool
     {
         while ($this->hasUnfinishedJobs()) {
             if (time() - $this->dispatchTime > $this->maxWaitTime) {
-                throw new \RuntimeException("Max wait time exceeded", -10001);
+                throw new \RuntimeException("Max wait time exceeded");
             }
             sleep(1);
         }

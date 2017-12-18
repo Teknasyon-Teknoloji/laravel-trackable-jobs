@@ -18,11 +18,6 @@ class TrackableJobServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        // publish config
-        $this->publishes([
-            __DIR__ . '/../config/trackable-jobs.php' => config_path('trackable-jobs.php'),
-        ]);
-
         // register event listeners for job trackings
         Queue::before(function (JobProcessing $event) {
             $actualJob = unserialize($event->job->payload()['data']['command']);
@@ -48,8 +43,7 @@ class TrackableJobServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(JobTrackingStoreInterface::class, new RedisJobTrackingStore());
-
+        $this->app->singleton(JobTrackingStore::class, new RedisJobTrackingStore());
     }
 
 }

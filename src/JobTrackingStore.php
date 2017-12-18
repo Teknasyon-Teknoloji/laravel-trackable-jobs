@@ -2,8 +2,9 @@
 
 namespace Teknasyon\LaravelTrackableJobs;
 
-interface JobTrackingStoreInterface
+interface JobTrackingStore
 {
+    public function generateId();
 
     public function has($id): bool;
 

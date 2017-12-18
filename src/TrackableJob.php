@@ -5,7 +5,6 @@ namespace Teknasyon\LaravelTrackableJobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Redis;
 
 /**
  * Class TrackableJob
@@ -15,22 +14,23 @@ abstract class TrackableJob implements ShouldQueue
 {
     use InteractsWithQueue, Queueable;
 
-    public $trackingId;
+    protected $trackingId;
 
     /**
      *
      * @ilyas I could make this private, but I'm not your daddy. You should know what not to do ;)
      *
-     * @var JobTrackingStoreInterface
+     * @var JobTrackingStore
      */
     protected $store;
 
     /**
      * TrackableJob constructor.
+     * @param JobTrackingStore $store
      */
-    public function __construct()
+    public function __construct(JobTrackingStore $store)
     {
-        $this->store = new RedisJobTrackingStore();
+        $this->store = $store;
     }
 
     /**
@@ -38,12 +38,14 @@ abstract class TrackableJob implements ShouldQueue
      */
     public function startTracking()
     {
-        $this->trackingId = $this->generateTrackingId();
-        while ($this->store->has($this->trackingId)) {
-            $this->trackingId = $this->generateTrackingId();
-        }
+        $this->trackingId = $this->store->generateId();
 
         $this->store->put($this->trackingId, new TrackableJobStatus());
+    }
+
+    public function getTrackingId()
+    {
+        return $this->trackingId;
     }
 
     /**
@@ -53,7 +55,6 @@ abstract class TrackableJob implements ShouldQueue
     {
         return $this->store->get($this->trackingId);
     }
-
 
     /**
      * @return bool
@@ -70,14 +71,6 @@ abstract class TrackableJob implements ShouldQueue
     public function updateStatus($status)
     {
         return $this->store->update($this->trackingId,$status);
-    }
-
-    /**
-     * @return string
-     */
-    private function generateTrackingId()
-    {
-        return uniqid();
     }
 
 }
